@@ -19,7 +19,37 @@ export default withApiAuthRequired(async function handler(req, res) {
 
   try {
     switch (req.method) {
-      // Add search functionality here
+      case "GET":
+        const term = req.query.term;
+        const getData = await fetch(`${baseUrl}/aggregate`, {
+          ...fetchOptions,
+          body: JSON.stringify({
+            ...fetchBody,
+            pipeline: [
+              {
+                $search: {
+                  index: "fluttersIndex",
+                  text: {
+                    query: term,
+                    path: {
+                      wildcard: "*",
+                    },
+                    fuzzy: {},
+                  },
+                },
+              },
+              {
+                $sort: {
+                  postedAt: -1,
+                },
+              },
+            ],
+          }),
+        });
+        const getDataJson = await getData.json();
+        console.log(getDataJson);
+        res.status(200).json(getDataJson.documents);
+        break;
       default:
         res.status(405).end();
         break;
