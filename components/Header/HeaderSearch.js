@@ -58,16 +58,13 @@ const HeaderSearch = ({ setFlutters }) => {
   const { classes } = useStyles();
 
   const handleSearch = async (e) => {
-    console.log("tester");
     const term = e.currentTarget.value;
     setSearchTerm(e.currentTarget.value);
 
     if (term.length > 2 || term.length === 0) {
-      console.log(`term: ${term}`);
       const getFlutters = await fetch(`/api/flutter/${term}`);
       const getFluttersJson = await getFlutters.json();
 
-      console.log(getFluttersJson);
       setFlutters(getFluttersJson);
     }
   };
